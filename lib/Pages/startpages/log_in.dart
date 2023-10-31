@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
+import 'dart:convert';
+
+import 'package:app/apiconnection.dart';
+import 'package:http/http.dart' as http;
 
 import '../../widgets/big_text.dart';
 import 'forget_password.dart';
@@ -18,6 +22,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
       statusBarIconBrightness:
           Get.isDarkMode == true ? Brightness.light : Brightness.light,
@@ -98,4 +103,5 @@ class _SignInState extends State<SignIn> {
       ),
     ));
   }
+
 }

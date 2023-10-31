@@ -1,17 +1,22 @@
+
+import 'package:app/apiconnection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import '../../../widgets/Theme.dart';
 import '../../../widgets/big_text.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
+  const ProfilePage({Key? key, required this.name}) : super(key: key);
+  final String name;
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late Future<Map<String, List<String>>> _userDataFuture;
+
   List containerlist = [
     [Icons.location_on, 'Address', Icons.arrow_forward_ios_rounded],
     [
@@ -28,12 +33,71 @@ class _ProfilePageState extends State<ProfilePage> {
     [Icons.star_rounded, 'Rate this app', Icons.arrow_forward_ios_rounded],
     [Icons.logout_outlined, 'Log out', Icons.arrow_forward_ios_rounded],
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _userDataFuture = Api.fetchUser()  ;
+  }
+  //
+  // FutureBuilder(
+  // future: _fetchUserData(),
+  // builder: (context, snapshot) {
+  // if (snapshot.connectionState == ConnectionState.waiting) {
+  // // While data is being fetched, show a loading indicator
+  // return CircularProgressIndicator();
+  // } else if (snapshot.hasError) {
+  // // If there's an error, display an error message
+  // return Text('Error: ${snapshot.error}');
+  // } else {
+  // // Data loaded successfully, update the UI with the fetched data
+  // List<String> userData = snapshot.data as List<String>;
+  // return YourWidget(user: userData);
+  // }
+  // },
+  // )
+
+
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-      body: Column(
+
+    return WillPopScope(
+      onWillPop: ()=> Themedark().backButtton(context),
+      child: Scaffold(
+        backgroundColor: Theme
+            .of(context)
+            .bottomAppBarTheme
+            .color,
+
+        body: FutureBuilder<Map<String, List<String>>>(
+      future: _userDataFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // While data is being fetched, show a loading indicator
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            // If there's an error, display an error message
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            // Data loaded successfully, update the UI with the fetched data
+            Map<String,List<String>> userData = snapshot.data!;
+            return buildProfilePage(userData);
+          } else {
+            // Handle other states as needed
+            return Center(child: Text('No data available.'));
+          }
+        },
+      ),
+      ),
+    );
+  }
+  Widget buildProfilePage(Map<String,List<String>> userData) {
+    return  Column(
         children: [
+          // User=Api().fetchUser(),
+
           Spacer(
             flex: 1,
           ),
@@ -60,13 +124,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BigText(
-                        text: 'Sunie Pham',
-                        size: 16,
-                        color: Get.isDarkMode ? Colors.white : Colors.black,
-                        weight: FontWeight.bold),
+                          text: userData['names']![0],
+                          size: 16,
+                          color: Get.isDarkMode ? Colors.white : Colors.black,
+                          weight: FontWeight.bold),
                     SizedBox(height: 5),
                     BigText(
-                        text: 'sunieux@gmail.com',
+                        text: userData['emails']![0],
                         size: 12,
                         color: Get.isDarkMode ? Colors.white : Colors.black,
                         weight: FontWeight.normal)
@@ -120,9 +184,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                 i == containerlist.length - 1
                                     ? Container()
                                     : Icon(
-                                        containerlist[i][2],
-                                        size: 17,
-                                      )
+                                  containerlist[i][2],
+                                  size: 17,
+                                )
                               ],
                             ),
                             onTap: () {},
@@ -148,7 +212,10 @@ class _ProfilePageState extends State<ProfilePage> {
             flex: 6,
           )
         ],
-      ),
+
     );
   }
+
+
+
 }

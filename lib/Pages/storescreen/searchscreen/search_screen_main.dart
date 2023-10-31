@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../widgets/Theme.dart';
 import '../../../widgets/searchbar.dart';
 import 'ListViewSearchPage.dart';
 
@@ -13,23 +14,26 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25),
-              child: SearchBarApp(
-                ontap: () {
-                  Scaffold.of(context).openEndDrawer();
-                },
+    return WillPopScope(
+      onWillPop: ()=> Themedark().backButtton(context),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25),
+                child: SearchBarApp(
+                  ontap: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                ),
               ),
-            ),
-            Spacer(),
-            ListViewSearch(),
-          ],
+              Spacer(),
+              ListViewSearch(),
+            ],
+          ),
         ),
       ),
     );

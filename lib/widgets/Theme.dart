@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../Pages/storescreen/homescreen/home_screen.dart';
 // import 'package:google_fonts/google_fonts.dart';
 
 const Color bluishClr = Color(0xFF4e5ae8);
@@ -62,4 +64,15 @@ class Themes {
 class Themedark {
   static int index = 0;
   static bool searchpagebody = false;
+
+
+
+  Future<bool> backButtton(context) async{
+
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      return true;
+
+  }
+
+
 }

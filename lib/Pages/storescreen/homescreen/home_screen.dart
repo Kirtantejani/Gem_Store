@@ -1,4 +1,8 @@
+import 'dart:convert';
+
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../../../widgets/Theme.dart';
@@ -26,66 +30,74 @@ class _HomePageState extends State<HomePage> {
     'My Orders',
     'Profile'
   ];
-  List<Widget> navigation = [
-    HomeScreenBody(),
-    SearchPage(),
-    MyOrder(),
-    ProfilePage(),
-  ];
+
+
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4,
-      child: SafeArea(
-        child: Scaffold(
-          key: scaffoldKey,
-          // Themedark.darkmode == false ? Colors.white : Colors.black,
-          drawer: drawer(
-            index: index,
-          ),
-          endDrawer: EndDrawer(),
-          appBar: appbar(
-              context,
-              Get.isDarkMode == true
-                  ? Image.asset('assets/image/drawer_icon_dark_theme.png')
-                  : Image.asset(
-                      'assets/image/drawer_icon.png',
-                    ),
-              navigationTitle[index],
-              Get.isDarkMode == true
-                  ? Image.asset('assets/image/Bell_pin_dark.png')
-                  : Image.asset('assets/image/postimage.png')),
-          body: navigation[index],
-          bottomNavigationBar: NavigationBarTheme(
-            data: NavigationBarThemeData(
-                backgroundColor:
-                    Get.isDarkMode == true ? Colors.black : Colors.white),
-            // Themedark.darkmode == false ? Colors.white : ),
-            child: NavigationBar(
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-              height: 80,
-              selectedIndex: index,
-              onDestinationSelected: (index) => setState(() {
-                this.index = index;
-              }),
-              destinations: [
-                NavigationDestination(
-                  icon: Icon(Icons.home_outlined),
-                  label: '',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.search),
-                  label: '',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.shopping_bag_outlined),
-                  label: '',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  label: '',
-                ),
-              ],
+    //
+    List<Widget> navigation = [
+      HomeScreenBody(),
+      SearchPage(),
+      MyOrder(),
+      ProfilePage(name: 'Kirtan'),
+    ];
+    return WillPopScope(
+      onWillPop:()=>  _onBackButtonPressed(context),
+      child: DefaultTabController(
+        length: 4,
+        child: SafeArea(
+          child: Scaffold(
+            key: scaffoldKey,
+            // Themedark.darkmode == false ? Colors.white : Colors.black,
+            drawer: drawer(
+              index: index,
+            ),
+            endDrawer: EndDrawer(),
+            appBar: appbar(
+                context,
+                Get.isDarkMode == true
+                    ? Image.asset('assets/image/drawer_icon_dark_theme.png')
+                    : Image.asset(
+                        'assets/image/drawer_icon.png',
+                      ),
+                navigationTitle[index],
+                Get.isDarkMode == true
+                    ? Image.asset('assets/image/Bell_pin_dark.png')
+                    : Image.asset('assets/image/postimage.png')),
+            body: navigation[index],
+            bottomNavigationBar: NavigationBarTheme(
+              data: NavigationBarThemeData(
+                  backgroundColor:
+                      Get.isDarkMode == true ? Colors.black : Colors.white),
+              // Themedark.darkmode == false ? Colors.white : ),
+              child: NavigationBar(
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                height: 80,
+                selectedIndex: index,
+                onDestinationSelected: (index) => setState(() {
+
+                  this.index = index;
+                }),
+                destinations: [
+                  NavigationDestination(
+                    icon: Icon(Icons.home_outlined),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.search),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.shopping_bag_outlined),
+                    label: '',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.person_outline),
+                    label: '',
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -144,4 +156,28 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
+  Future<bool> _onBackButtonPressed(BuildContext context)  async{
+    bool exitApp= await showDialog(context: context, builder: (context){
+      return AlertDialog(
+      title: Text('Exit App'),
+      content: Text('Do you want to close the app?'),
+      actions:
+        <Widget>[
+          TextButton(onPressed: (){Navigator.of(context).pop(false);}, child: Text('No'),),
+          TextButton(onPressed: (){Navigator.of(context).pop(true);}, child: Text('Yes'),)
+
+
+      ],
+
+
+
+    );
+    },
+    );
+    return exitApp?? false;
+  }
+
+
+
 }
